@@ -47,7 +47,7 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     // but be careful - it will be called on the audio thread, not the GUI thread.
 
     // For more details, see the help for AudioProcessor::prepareToPlay()
-    metronome.prepareToPlay(sampleRate);
+    metronome.prepareToPlay(samplesPerBlockExpected,sampleRate);
 }
 
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
@@ -61,7 +61,7 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     bufferToFill.clearActiveBufferRegion();
     auto buffer = bufferToFill.numSamples;
     if (playState == PlayState::Playing)
-        metronome.countSamples(buffer);
+        metronome.getNextAudioBlock(bufferToFill);
     
 }
 

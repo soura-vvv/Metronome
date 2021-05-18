@@ -7,7 +7,7 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent  : public juce::AudioAppComponent
+class MainComponent : public juce::AudioAppComponent, public juce::Slider::Listener
 {
 public:
     //==============================================================================
@@ -24,6 +24,7 @@ public:
     void resized() override;
     void playButtonClicked();
     void stopButtonClicked();
+    void sliderValueChanged(juce::Slider* slider) override;
     enum class PlayState
     {
         Playing,
@@ -33,8 +34,10 @@ private:
 
     juce::TextButton playButton{ "Play" };
     juce::TextButton stopButton{ "Stop" };
-
+    juce::Slider bpmSlider;
     PlayState playState{PlayState::Stopped};
     Metronome metronome;
+   // juce::Label bpmLabel{ "BPM" };
+    //juce::Slider::Listener listener;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

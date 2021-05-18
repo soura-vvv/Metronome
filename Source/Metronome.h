@@ -19,6 +19,7 @@ public:
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate);
     void reset();
     void juce::HighResolutionTimer::hiResTimerCallback() override;
+    void setBpm(int bpm);
 private:
     int mTotalSamples{ 0 };
     int mInterval{ 0 };

@@ -3,6 +3,7 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
+    
     // Make sure you set the size of the component after
     // you add any child components.
     playButton.setToggleState(false,juce::NotificationType::dontSendNotification);
@@ -15,7 +16,18 @@ MainComponent::MainComponent()
     stopButton.setRadioGroupId(1);
     stopButton.onClick = [this] {stopButtonClicked(); };
 
-    setSize (200, 300);
+    bpmSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
+    bpmSlider.setRange(1, 400,1);
+    //bpmSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 10, 10);
+    bpmSlider.addListener(this);
+    bpmSlider.setValue(120);
+    addAndMakeVisible(bpmSlider);
+
+    //bpmLabel.setJustificationType(juce::Justification::centred);
+   // bpmLabel.attachToComponent(&bpmSlider, false);
+  //  addAndMakeVisible(bpmLabel);
+
+    setSize (200, 200);
 
     // Some platforms require permissions to open input channels so request that here
     if (juce::RuntimePermissions::isRequired (juce::RuntimePermissions::recordAudio)
@@ -78,7 +90,8 @@ void MainComponent::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
+    g.setColour(juce::Colours::white);
+    g.drawFittedText("BPM", 60, 5, 80, 30, juce::Justification::Flags::centred, 1);
     // You can add your drawing code here!
 }
 
@@ -89,9 +102,22 @@ void MainComponent::resized()
     // update their positions.
     juce::Rectangle<int> bounds = getLocalBounds();
     juce::FlexBox flexBox;
-    flexBox.items.add(juce::FlexItem(90, 90, playButton));
-    flexBox.items.add(juce::FlexItem(90, 90, stopButton));
-    flexBox.performLayout(bounds.reduced(10));
+    //flexBox.items.add(juce::FlexItem(180,40,bpmSlider));
+
+    //flexBox.items.add(juce::FlexItem(40, 40, playButton));
+    //flexBox.items.add(juce::FlexItem(40, 40, stopButton));
+    //flexBox.performLayout(bounds.reduced(10));
+    bounds = bounds.reduced(10);
+    bounds.removeFromTop(40);
+    //bpmLabel.setBounds(bounds.removeFromTop(20).removeFromLeft(80));
+    bpmSlider.setBounds(bounds.removeFromTop(40).removeFromLeft(180));
+    bounds.removeFromTop(40);
+    bounds.removeFromLeft(30);
+    playButton.setBounds(bounds.removeFromLeft(50).removeFromTop(40));
+    bounds.removeFromLeft(20);
+    stopButton.setBounds(bounds.removeFromLeft(50).removeFromTop(40));
+
+    
 }
 void MainComponent::playButtonClicked()
 {
@@ -101,4 +127,9 @@ void MainComponent::stopButtonClicked()
 {
     playState = PlayState::Stopped;
     metronome.reset();
+}
+void  MainComponent::sliderValueChanged(juce::Slider* slider)
+{
+    if (slider == &bpmSlider)
+        metronome.setBpm(bpmSlider.getValue());
 }

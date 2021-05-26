@@ -25,6 +25,7 @@ public:
     void playButtonClicked();
     void stopButtonClicked();
     void sliderValueChanged(juce::Slider* slider) override;
+    void loadButtonClicked();
     enum class PlayState
     {
         Playing,
@@ -37,6 +38,9 @@ private:
     juce::Slider bpmSlider;
     PlayState playState{PlayState::Stopped};
     Metronome metronome;
+    
+    
+    
    // juce::Label bpmLabel{ "BPM" };
     //juce::Slider::Listener listener;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)

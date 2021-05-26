@@ -12,11 +12,16 @@
 Metronome::Metronome()
 {
     mFormatManager.registerBasicFormats();
-    juce::File myFile{ juce::File::getSpecialLocation(juce::File::SpecialLocationType::userDesktopDirectory) };
-    auto mySample = myFile.findChildFiles(juce::File::TypesOfFileToFind::findFiles, true, "Perc (Rim).wav");
+    fileChooser();
+    
+    
+    
+    
    //jassert(mySamples[0].exists());
-    auto formatReader=mFormatManager.createReaderFor(mySample[0]);
-    pMetronomeSample.reset(new juce::AudioFormatReaderSource(formatReader, true));
+    
+    
+
+    
 }
 void Metronome::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
@@ -28,8 +33,8 @@ void Metronome::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFi
 
     if ((mSamplesRemaining + bufferToFill.numSamples) >= mInterval)
     {
-        const auto timeToStartPlaying = mInterval - mSamplesRemaining;
-        pMetronomeSample->setNextReadPosition(0);
+        const auto timeToStartPlaying = mInterval - mSamplesRemaining;//Making it sample Accurate
+        pMetronomeSample->setNextReadPosition(2);
 
 
 
@@ -38,11 +43,12 @@ void Metronome::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFi
             if (sample == timeToStartPlaying)
             {
                 pMetronomeSample->getNextAudioBlock(bufferToFill);
+                break;
             }
         }
     }
 
-    if (pMetronomeSample->getNextReadPosition() != 0) { pMetronomeSample->getNextAudioBlock(bufferToFill); }
+    if (pMetronomeSample->getNextReadPosition() < pMetronomeSample->getTotalLength()) { pMetronomeSample->getNextAudioBlock(bufferToFill); }
 
 }
 void Metronome::reset()
@@ -67,4 +73,22 @@ void Metronome::hiResTimerCallback()
 void Metronome::setBpm(int bpm)
 {
     mBpm = bpm;
+}
+
+void Metronome::fileChooser()
+{
+    juce::FileChooser chooser{ "Choose A File For the Metronome Click",{},"*.wav;*.mp3" };
+    if (chooser.browseForFileToOpen())
+    {
+        auto myFile = chooser.getResult();
+
+        auto formatReader = mFormatManager.createReaderFor(myFile);
+        if (formatReader != nullptr)
+        {
+            pMetronomeSample.reset(new juce::AudioFormatReaderSource(formatReader, true));
+        }
+
+    }
+    else
+        fileChooser();
 }

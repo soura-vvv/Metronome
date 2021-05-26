@@ -20,11 +20,13 @@ public:
     void reset();
     void juce::HighResolutionTimer::hiResTimerCallback() override;
     void setBpm(int bpm);
+    void fileChooser();
 private:
     int mTotalSamples{ 0 };
     int mInterval{ 0 };
     int mBpm{ 140 };
     double mSampleRate;
+    
     int mSamplesRemaining;
     juce::AudioFormatManager mFormatManager;
     std::unique_ptr<juce::AudioFormatReaderSource> pMetronomeSample{ nullptr };

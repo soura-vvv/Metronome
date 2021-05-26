@@ -6,23 +6,27 @@ MainComponent::MainComponent()
     
     // Make sure you set the size of the component after
     // you add any child components.
+
+    
     playButton.setToggleState(false,juce::NotificationType::dontSendNotification);
     addAndMakeVisible(playButton);
     playButton.setRadioGroupId(1);
     playButton.onClick = [this] {playButtonClicked(); };
-
+    
     stopButton.setToggleState(true, juce::NotificationType::dontSendNotification);
     addAndMakeVisible(stopButton);
     stopButton.setRadioGroupId(1);
     stopButton.onClick = [this] {stopButtonClicked(); };
-
+    
     bpmSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
     bpmSlider.setRange(1, 400,1);
+   
     //bpmSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 10, 10);
     bpmSlider.addListener(this);
     bpmSlider.setValue(120);
     addAndMakeVisible(bpmSlider);
 
+   
     //bpmLabel.setJustificationType(juce::Justification::centred);
    // bpmLabel.attachToComponent(&bpmSlider, false);
   //  addAndMakeVisible(bpmLabel);

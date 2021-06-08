@@ -7,7 +7,7 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent : public juce::AudioAppComponent, public juce::Slider::Listener
+class MainComponent : public juce::AudioAppComponent, public juce::Slider::Listener,public juce::HighResolutionTimer
 {
 public:
     //==============================================================================
@@ -31,6 +31,7 @@ public:
         Playing,
         Stopped
     };
+    void juce::HighResolutionTimer::hiResTimerCallback() override;
 private:
 
     juce::TextButton playButton{ "Play" };

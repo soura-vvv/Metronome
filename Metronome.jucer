@@ -11,6 +11,10 @@
       <FILE id="PqaROD" name="Metronome.cpp" compile="1" resource="0" file="Source/Metronome.cpp"/>
       <FILE id="SF5DGL" name="Metronome.h" compile="0" resource="0" file="Source/Metronome.h"/>
     </GROUP>
+    <FILE id="MfrRAP" name="Metronome_Sound_1.wav" compile="0" resource="1"
+          file="Metronome_Sound_1.wav"/>
+    <FILE id="sR47sr" name="Metronome_Sound_2.wav" compile="0" resource="1"
+          file="Metronome_Sound_2.wav"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>

@@ -34,21 +34,35 @@ void Metronome::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFi
     if ((mSamplesRemaining + bufferToFill.numSamples) >= mInterval)
     {
         const auto timeToStartPlaying = mInterval - mSamplesRemaining;//Making it sample Accurate
-        pMetronomeSample->setNextReadPosition(2);
-
+        pMetronomeSample->setNextReadPosition(0);
+        pMetronomeSample2->setNextReadPosition(0);
 
 
         for (auto sample = 0; sample <= bufferToFill.numSamples; sample++)
         {
             if (sample == timeToStartPlaying)
             {
-                pMetronomeSample->getNextAudioBlock(bufferToFill);
+                counter = (counter + 1) % 4;
+                if (counter == 0)
+                {
+                    pMetronomeSample->getNextAudioBlock(bufferToFill);
+                   if (pMetronomeSample->getNextReadPosition() < pMetronomeSample->getTotalLength()) { pMetronomeSample->getNextAudioBlock(bufferToFill); }
+                }
+                    
+                else
+                {
+                    pMetronomeSample2->getNextAudioBlock(bufferToFill);
+                    if (pMetronomeSample2->getNextReadPosition() < pMetronomeSample2->getTotalLength()) { pMetronomeSample2->getNextAudioBlock(bufferToFill); }
+                }
+                    
+                
+                DBG(counter);
                 break;
             }
         }
     }
 
-    if (pMetronomeSample->getNextReadPosition() < pMetronomeSample->getTotalLength()) { pMetronomeSample->getNextAudioBlock(bufferToFill); }
+    
 
 }
 void Metronome::reset()
@@ -62,7 +76,8 @@ void Metronome::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
     mSampleRate = sampleRate;
     if(pMetronomeSample!=nullptr)
         pMetronomeSample->prepareToPlay(samplesPerBlockExpected, sampleRate);
-    
+    if (pMetronomeSample != nullptr)
+        pMetronomeSample2->prepareToPlay(samplesPerBlockExpected, sampleRate);
 
     
 }
@@ -77,18 +92,48 @@ void Metronome::setBpm(int bpm)
 
 void Metronome::fileChooser()
 {
-    juce::FileChooser chooser{ "Choose A File For the Metronome Click",{},"*.wav;*.mp3" };
-    if (chooser.browseForFileToOpen())
+    auto myFile = juce::File::getCurrentWorkingDirectory().getChildFile("Metronome_Sound_2.wav");
+    
+    DBG(myFile.getFullPathName());
+    
+    
+    auto formatReader = mFormatManager.createReaderFor(myFile);
+    if (formatReader != nullptr)
     {
-        auto myFile = chooser.getResult();
-
-        auto formatReader = mFormatManager.createReaderFor(myFile);
-        if (formatReader != nullptr)
-        {
-            pMetronomeSample.reset(new juce::AudioFormatReaderSource(formatReader, true));
-        }
-
+        pMetronomeSample2.reset(new juce::AudioFormatReaderSource(formatReader, true));
     }
     else
-        fileChooser();
+    {
+        myFile = juce::File::getCurrentWorkingDirectory().getChildFile("../../../../../Metronome_Sound_2.wav");
+        formatReader = mFormatManager.createReaderFor(myFile);
+        
+        if (formatReader != nullptr)
+        {
+            pMetronomeSample2.reset(new juce::AudioFormatReaderSource(formatReader, true));
+            
+        }
+            
+       
+    }
+     myFile = juce::File::getCurrentWorkingDirectory().getChildFile("Metronome_sound_1.wav");
+
+
+    DBG(myFile.getFullPathName());
+
+
+    formatReader = mFormatManager.createReaderFor(myFile);
+    if (formatReader != nullptr)
+    {
+        pMetronomeSample.reset(new juce::AudioFormatReaderSource(formatReader, true));
+    }
+    else
+    {
+        myFile = juce::File::getCurrentWorkingDirectory().getChildFile("../../../../../Metronome_Sound_1.wav");
+        formatReader = mFormatManager.createReaderFor(myFile);
+        if (formatReader != nullptr)
+            pMetronomeSample.reset(new juce::AudioFormatReaderSource(formatReader, true));
+        
+    }   
+   
+    
 }

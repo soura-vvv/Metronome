@@ -7,7 +7,7 @@ MainComponent::MainComponent()
     // Make sure you set the size of the component after
     // you add any child components.
 
-    
+    juce::HighResolutionTimer::startTimer(60.0);
     playButton.setToggleState(false,juce::NotificationType::dontSendNotification);
     addAndMakeVisible(playButton);
     playButton.setRadioGroupId(1);
@@ -30,7 +30,8 @@ MainComponent::MainComponent()
     //bpmLabel.setJustificationType(juce::Justification::centred);
    // bpmLabel.attachToComponent(&bpmSlider, false);
   //  addAndMakeVisible(bpmLabel);
-
+    
+    
     setSize (200, 200);
 
     // Some platforms require permissions to open input channels so request that here
@@ -97,6 +98,9 @@ void MainComponent::paint (juce::Graphics& g)
     g.setColour(juce::Colours::white);
     g.drawFittedText("BPM", 60, 5, 80, 30, juce::Justification::Flags::centred, 1);
     // You can add your drawing code here!
+    g.drawFittedText(juce::String(metronome.counter + 1), 60, 25, 80, 30, juce::Justification::Flags::centred, 1);
+    
+    //g.drawFittedText(metronome.zzPath, 05, 25, 500, 30, juce::Justification::Flags::centred, 1);
 }
 
 void MainComponent::resized()
@@ -136,4 +140,10 @@ void  MainComponent::sliderValueChanged(juce::Slider* slider)
 {
     if (slider == &bpmSlider)
         metronome.setBpm(bpmSlider.getValue());
+}
+void MainComponent::hiResTimerCallback()
+{
+    juce::MessageManager::callAsync([=]() {
+        repaint();
+        });
 }
